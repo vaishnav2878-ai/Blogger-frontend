@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { Link } from "react-router-dom";
-import { Search, Eye, Calendar, Heart, Tag, TrendingUp, Filter } from "lucide-react";
+import {
+  Search,
+  Eye,
+  Calendar,
+  Heart,
+  Tag,
+  TrendingUp,
+  Filter,
+} from "lucide-react";
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
@@ -13,6 +21,7 @@ function Home() {
     const fetchBlogs = async () => {
       try {
         const res = await API.get("/blogs");
+        console.log(res.data);
         setBlogs(res.data);
       } catch (error) {
         console.log(error);
@@ -20,27 +29,32 @@ function Home() {
         setLoading(false);
       }
     };
+
     fetchBlogs();
   }, []);
 
-  // Get unique categories
+  // Categories
   const categories = ["All", ...new Set(blogs.map((b) => b.category))];
 
-  // Trending = top 3 most viewed
+  // Trending blogs
   const trendingBlogs = [...blogs]
     .sort((a, b) => b.views - a.views)
     .slice(0, 3);
 
-  // Filter by search + category
+  // Search + category filter
   const filteredBlogs = blogs.filter((blog) => {
     const matchSearch =
       blog.title.toLowerCase().includes(search.toLowerCase()) ||
       blog.category.toLowerCase().includes(search.toLowerCase());
+
     const matchCategory =
-      selectedCategory === "All" || blog.category === selectedCategory;
+      selectedCategory === "All" ||
+      blog.category === selectedCategory;
+
     return matchSearch && matchCategory;
   });
 
+  // Blog Card
   const BlogCard = ({ blog }) => (
     <Link
       to={`/blog/${blog._id}`}
@@ -48,7 +62,7 @@ function Home() {
     >
       {blog.image ? (
         <img
-          src={`http://localhost:5000/uploads/${blog.image}`}
+          src={`${import.meta.env.VITE_BACKEND_URL}/${blog.image}`}
           className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
           alt={blog.title}
         />
@@ -57,31 +71,43 @@ function Home() {
           <span className="text-gray-600 text-sm">No Image</span>
         </div>
       )}
+
       <div className="p-4">
         <div className="flex items-center gap-1 mb-2">
           <Tag className="w-3 h-3 text-yellow-400" />
-          <span className="text-yellow-400 text-xs font-semibold">{blog.category}</span>
+          <span className="text-yellow-400 text-xs font-semibold">
+            {blog.category}
+          </span>
         </div>
+
         <h2 className="text-base font-bold text-white mb-1 group-hover:text-yellow-400 transition line-clamp-2">
           {blog.title}
         </h2>
+
         <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 mb-3">
           {blog.description}
         </p>
+
         <div className="flex items-center justify-between pt-3 border-t border-gray-800 text-xs text-gray-500">
           <div className="flex items-center gap-1">
             <div className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 flex items-center justify-center font-bold text-xs">
               {blog.user?.name?.charAt(0).toUpperCase()}
             </div>
+
             <span>{blog.user?.name}</span>
           </div>
+
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <Eye className="w-3 h-3" />{blog.views}
+              <Eye className="w-3 h-3" />
+              {blog.views}
             </span>
+
             <span className="flex items-center gap-1">
-              <Heart className="w-3 h-3 text-red-400" />{blog.likes?.length || 0}
+              <Heart className="w-3 h-3 text-red-400" />
+              {blog.likes?.length || 0}
             </span>
+
             <span className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               {new Date(blog.createdAt).toLocaleDateString()}
@@ -97,18 +123,24 @@ function Home() {
 
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8 md:py-16 px-4 text-center border-b border-gray-800">
+
         <span className="inline-block bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">
           Welcome to BlogApp
         </span>
+
         <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-3 leading-tight">
           Discover <span className="text-yellow-400">Amazing</span> Stories
         </h1>
+
         <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-xl mx-auto">
           Read, write, and share ideas with the world. Your voice matters.
         </p>
+
         <div className="flex justify-center px-2">
           <div className="relative w-full max-w-lg">
+
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+
             <input
               type="text"
               placeholder="Search by title or category..."
@@ -116,67 +148,87 @@ function Home() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
 
-        {/* Trending Section */}
+        {/* Trending Blogs */}
         {!loading && trendingBlogs.length > 0 && (
           <div className="mb-12">
+
             <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="w-5 h-5 text-yellow-400" />
               <h2 className="text-xl font-bold">Trending Blogs</h2>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+
               {trendingBlogs.map((blog, index) => (
                 <Link
                   key={blog._id}
                   to={`/blog/${blog._id}`}
                   className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-yellow-400 transition-all duration-300 group relative"
                 >
+
                   {/* Rank Badge */}
                   <div className="absolute top-3 left-3 z-10 bg-yellow-400 text-gray-900 w-7 h-7 rounded-full flex items-center justify-center font-black text-sm">
                     {index + 1}
                   </div>
+
                   {blog.image ? (
                     <img
-                      src={`http://localhost:5000/uploads/${blog.image}`}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/${blog.image}`}
                       className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
                       alt={blog.title}
                     />
                   ) : (
                     <div className="w-full h-36 bg-gray-800 flex items-center justify-center">
-                      <span className="text-gray-600 text-sm">No Image</span>
+                      <span className="text-gray-600 text-sm">
+                        No Image
+                      </span>
                     </div>
                   )}
+
                   <div className="p-4">
                     <h3 className="font-bold text-white text-sm group-hover:text-yellow-400 transition line-clamp-2 mb-2">
                       {blog.title}
                     </h3>
+
                     <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
-                        <Eye className="w-3 h-3" />{blog.views}
+                        <Eye className="w-3 h-3" />
+                        {blog.views}
                       </span>
+
                       <span className="flex items-center gap-1">
-                        <Heart className="w-3 h-3 text-red-400" />{blog.likes?.length || 0}
+                        <Heart className="w-3 h-3 text-red-400" />
+                        {blog.likes?.length || 0}
                       </span>
                     </div>
                   </div>
+
                 </Link>
               ))}
+
             </div>
           </div>
         )}
 
         {/* Category Filter */}
         <div className="mb-8">
+
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-4 h-4 text-yellow-400" />
-            <h2 className="text-lg font-bold">Filter by Category</h2>
+            <h2 className="text-lg font-bold">
+              Filter by Category
+            </h2>
           </div>
+
           <div className="flex flex-wrap gap-2">
+
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -190,38 +242,52 @@ function Home() {
                 {cat}
               </button>
             ))}
+
           </div>
         </div>
 
         {/* Latest Blogs */}
         <div className="flex items-center justify-between mb-6">
+
           <h2 className="text-xl font-bold">
-            {selectedCategory === "All" ? "Latest Blogs" : `${selectedCategory} Blogs`}
+            {selectedCategory === "All"
+              ? "Latest Blogs"
+              : `${selectedCategory} Blogs`}
+
             <span className="ml-2 text-sm font-normal text-gray-400">
               ({filteredBlogs.length} posts)
             </span>
           </h2>
+
         </div>
 
+        {/* Loading */}
         {loading && (
           <div className="flex justify-center py-20">
             <div className="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
 
+        {/* No Blogs */}
         {!loading && filteredBlogs.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-base">No blogs found.</p>
+            <p className="text-gray-400 text-base">
+              No blogs found.
+            </p>
           </div>
         )}
 
+        {/* Blog Grid */}
         {!loading && filteredBlogs.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
             {filteredBlogs.map((blog) => (
               <BlogCard key={blog._id} blog={blog} />
             ))}
+
           </div>
         )}
+
       </div>
     </div>
   );
