@@ -182,7 +182,7 @@ function Home() {
 
                   {blog.image ? (
                     <img
-                      src={blog.image}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
 
 
                       className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
