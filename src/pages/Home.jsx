@@ -61,16 +61,17 @@ function Home() {
       className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-400/10 transition-all duration-300 group"
     >
       {blog.image ? (
-        <img
-          src={`${import.meta.env.VITE_BACKEND_URL}/${blog.image}`}
-          className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
-          alt={blog.title}
-        />
-      ) : (
-        <div className="w-full h-44 bg-gray-800 flex items-center justify-center">
-          <span className="text-gray-600 text-sm">No Image</span>
-        </div>
-      )}
+  <img
+    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
+
+    className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+    alt={blog.title}
+  />
+) : (
+  <div className="w-full h-44 bg-gray-800 flex items-center justify-center">
+    <span className="text-gray-600 text-sm">No Image</span>
+  </div>
+)}
 
       <div className="p-4">
         <div className="flex items-center gap-1 mb-2">
@@ -180,7 +181,8 @@ function Home() {
 
                   {blog.image ? (
                     <img
-                      src={`${import.meta.env.VITE_BACKEND_URL}/${blog.image}`}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
+
                       className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
                       alt={blog.title}
                     />
