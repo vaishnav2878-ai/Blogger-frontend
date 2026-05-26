@@ -102,7 +102,7 @@ function Dashboard() {
                 <div className="flex items-center gap-4">
                   {blog.image ? (
                     <img
-                      src={blog.image}
+                      src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
                       className="w-16 h-16 rounded-lg object-cover"
                       alt={blog.title}
                     />
