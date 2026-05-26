@@ -121,7 +121,8 @@ function EditBlog() {
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Current Image</label>
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${currentImage}`}
+                src={currentImage}
+
                 className="w-full h-40 object-cover rounded-xl"
                 alt="current"
               />

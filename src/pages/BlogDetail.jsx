@@ -145,7 +145,8 @@ function BlogDetail() {
         {/* Image */}
         {blog.image && (
           <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
+            src={blog.image}
+
             alt={blog.title}
             className="w-full h-[250px] sm:h-[350px] md:h-[400px] object-cover rounded-xl mb-8"
           />
