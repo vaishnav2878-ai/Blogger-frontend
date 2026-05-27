@@ -62,7 +62,8 @@ function Home() {
     >
       {blog.image ? (
   <img
-    src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
+   src={blog.image}
+ 
 
 
     className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -182,7 +183,8 @@ function Home() {
 
                   {blog.image ? (
                     <img
-                      src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${blog.image}`}
+                      src={blog.image}
+
 
 
                       className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
