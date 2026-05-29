@@ -18,28 +18,26 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [typedText, setTypedText] = useState("");
   const [heroVisible, setHeroVisible] = useState(false);
+  const [currentBg, setCurrentBg] = useState(0);
 
   const fullText = "Amazing Stories";
 
-  // ✅ Replace with
-useEffect(() => {
-  const visTimer = setTimeout(() => setHeroVisible(true), 100);
-  let i = 0;
-  const timer = setInterval(() => {
-    if (i <= fullText.length) {
-      setTypedText(fullText.slice(0, i));
-      i++;
-    } else {
+  useEffect(() => {
+    const visTimer = setTimeout(() => setHeroVisible(true), 100);
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i <= fullText.length) {
+        setTypedText(fullText.slice(0, i));
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 80);
+    return () => {
       clearInterval(timer);
-    }
-  }, 80);
-  return () => {
-    clearInterval(timer);
-    clearTimeout(visTimer);
-  };
-}, []);
-      
-    
+      clearTimeout(visTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -55,6 +53,16 @@ useEffect(() => {
     fetchBlogs();
   }, []);
 
+  useEffect(() => {
+    if (blogs.length === 0) return;
+    const bgImages = blogs.filter((b) => b.image);
+    if (bgImages.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % Math.min(bgImages.length, 5));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [blogs]);
+
   const categories = ["All", ...new Set(blogs.map((b) => b.category))];
   const trendingBlogs = [...blogs].sort((a, b) => b.views - a.views).slice(0, 3);
   const filteredBlogs = blogs.filter((blog) => {
@@ -64,6 +72,8 @@ useEffect(() => {
     const matchCategory = selectedCategory === "All" || blog.category === selectedCategory;
     return matchSearch && matchCategory;
   });
+
+  const bgImages = blogs.filter((b) => b.image).slice(0, 5);
 
   const BlogCard = ({ blog }) => (
     <Link
@@ -112,20 +122,33 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
 
-      {/* Hero Section with Animations */}
-      <div className="relative bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8 md:py-16 px-4 text-center border-b border-gray-800 overflow-hidden">
+      {/* Hero Section with Slideshow Background */}
+      <div className="relative py-8 md:py-16 px-4 text-center border-b border-gray-800 overflow-hidden min-h-[320px] flex items-center justify-center">
 
-        {/* Floating background blobs */}
+        {/* Slideshow Background Images */}
+        {bgImages.map((blog, index) => (
+          <div
+            key={blog._id}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{
+              opacity: index === currentBg ? 1 : 0,
+              backgroundImage: `url(${blog.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        ))}
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/70" />
+
+        {/* Floating blobs */}
         <div className="absolute top-0 left-0 w-72 h-72 bg-yellow-400/5 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-400/3 rounded-full blur-3xl animate-pulse delay-500" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl animate-pulse" />
 
         {/* Content */}
-        <div
-          className={`relative z-10 transition-all duration-700 ${
-            heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
+        <div className={`relative z-10 w-full transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+
           <span className="inline-block bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest animate-bounce">
             Welcome to BlogApp
           </span>
@@ -138,30 +161,38 @@ useEffect(() => {
             </span>
           </h1>
 
-          <p
-            className={`text-gray-400 text-sm sm:text-base mb-6 max-w-xl mx-auto transition-all duration-700 delay-300 ${
-              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
+          <p className={`text-gray-300 text-sm sm:text-base mb-6 max-w-xl mx-auto transition-all duration-700 delay-300 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             Read, write, and share ideas with the world. Your voice matters.
           </p>
 
-          <div
-            className={`flex justify-center px-2 transition-all duration-700 delay-500 ${
-              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
+          <div className={`flex justify-center px-2 transition-all duration-700 delay-500 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <div className="relative w-full max-w-lg">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search by title or category..."
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-white text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-black/50 backdrop-blur-sm border border-gray-600 text-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
           </div>
+
+          {/* Slide Indicators */}
+          {bgImages.length > 0 && (
+            <div className="flex justify-center gap-2 mt-5">
+              {bgImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBg(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentBg ? "bg-yellow-400 w-6" : "bg-gray-500 w-2"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
         </div>
       </div>
 
