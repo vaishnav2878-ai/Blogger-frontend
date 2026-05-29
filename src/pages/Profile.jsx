@@ -146,7 +146,7 @@ function Profile() {
                   <div className="flex items-center gap-4">
                     {blog.image ? (
                       <img
-                        src={`http://localhost:5000/uploads/${blog.image}`}
+                        src={blog.image}
                         className="w-16 h-16 rounded-lg object-cover shrink-0"
                         alt={blog.title}
                       />
