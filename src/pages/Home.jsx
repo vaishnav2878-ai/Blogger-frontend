@@ -73,7 +73,14 @@ function Home() {
     return matchSearch && matchCategory;
   });
 
-  const bgImages = blogs.filter((b) => b.image).slice(0, 5);
+  // ✅ Replace with
+const bgImages = [
+  { _id: 1, image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&q=80" },
+  { _id: 2, image: "https://images.unsplash.com/photo-1505682634904-d7c8d95cdc50?w=1920&q=80" },
+  { _id: 3, image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1920&q=80" },
+  { _id: 4, image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1920&q=80" },
+  { _id: 5, image: "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?w=1920&q=80" },
+];
 
   const BlogCard = ({ blog }) => (
     <Link
