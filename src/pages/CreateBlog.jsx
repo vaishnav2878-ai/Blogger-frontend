@@ -85,7 +85,7 @@ function CreateBlog() {
           </div>
 
           {/* Category */}
-          // ✅ Replace with
+          
 <div>
   <label className="block text-sm font-medium text-gray-300 mb-2">
     Category
