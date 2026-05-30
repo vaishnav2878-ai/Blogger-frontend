@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import { saveAuth } from "../utils/auth";
+import { saveAuth , getToken} from "../utils/auth";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,12 @@ function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getToken()) {
+      navigate("/");
+    }
+  },[]);
 
   const handleLogin = async (e) => {
   e.preventDefault();

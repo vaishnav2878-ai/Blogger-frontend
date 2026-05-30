@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import { saveAuth } from "../utils/auth";
+import { saveAuth , getToken} from "../utils/auth";
 
 function Register() {
   const [name, setName] = useState("");
@@ -10,6 +10,12 @@ function Register() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() =>{
+    if (getToken()) {
+      navigate("/");
+    }
+  }, []);
 
   const handleRegister = async (e) => {
   e.preventDefault();
