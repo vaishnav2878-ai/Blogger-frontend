@@ -85,17 +85,38 @@ function CreateBlog() {
           </div>
 
           {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Category
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Technology, Fashion, Travel..."
-              className="w-full bg-gray-800 border border-gray-700 text-white placeholder-gray-500 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition"
-              onChange={(e) => setCategory(e.target.value)}
-            />
-          </div>
+          // ✅ Replace with
+<div>
+  <label className="block text-sm font-medium text-gray-300 mb-2">
+    Category
+  </label>
+  <select
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+    className="w-full bg-gray-800 border border-gray-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition"
+  >
+    <option value="" disabled>Select a category...</option>
+    <option value="Sports">Sports</option>
+    <option value="Music">Music</option>
+    <option value="Movie">Movie</option>
+    <option value="Trading">Trading</option>
+    <option value="Comics">Comics</option>
+    <option value="Health">Health</option>
+    <option value="Entertainment">Entertainment</option>
+    <option value="Fitness">Fitness</option>
+    <option value="Others">Others</option>
+  </select>
+
+  {/* Show text input if Others selected */}
+  {category === "Others" && (
+    <input
+      type="text"
+      placeholder="Enter your category..."
+      className="w-full mt-3 bg-gray-800 border border-gray-700 text-white placeholder-gray-500 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition"
+      onChange={(e) => setCategory(e.target.value)}
+    />
+  )}
+</div>
 
           {/* Description */}
           <div>
